@@ -1,3 +1,6 @@
+import structs/List
+import Vector
+
 Matrix: class {
 
     width, height: Int
@@ -10,6 +13,16 @@ Matrix: class {
     init: func ~copy (src: This) {
         this(src width, src height)
         memcpy(this data, src data, Float size * width * height)
+    }
+    
+    init: func ~fromCols (l: List<Vector>) {
+        this(l size(), l[0] getSize())
+        for(x in 0..width) {
+            col := l[x]
+            for(y in 0..height) {
+                this[x, y] = col[y]
+            }
+        }
     }
     
     identity: static func (size: Int) -> This {

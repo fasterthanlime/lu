@@ -1,5 +1,5 @@
-import structs/Array
-import Matrix
+import structs/[Array, ArrayList]
+import Matrix, Vector
 
 // wooh, globals are evil
 appName := ""
@@ -66,19 +66,51 @@ qrDecomposition: func (m : Matrix, q, r: Matrix@) {
     width  := m getWidth()
     height := m getHeight()
     
-    q = Matrix new(width, height)
-    for(x in 0..width) l set(x, x, 1)
-    
-    r = Matrix new(m)
-    
-    for(x in 0..(width - 1)) {
-        for(y in (x + 1)..height) {
-            denom := r get(x, x)
-            numer := r get(x, y)
-            fac := numer / denom
-            q set(x, y, fac)
-            r lineAdd(x, y, -fac)
+    a := ArrayList<Vector> new()
+    for(x in 0..width) {
+        v := Vector new(height)
+        for(y in 0..height) {
+            v[y] = m[x, y]
         }
+        a add(v)
     }
+    
+    "===== a ======" println()
+    for(column in a) {
+        column print()
+    }
+    "==============\n" println()
+    
+    u := ArrayList<Vector> new()
+    e := ArrayList<Vector> new()
+
+    for(y in 0..width) {
+        un := Vector new(a[y])
+        for(i in 1..(y+1)) {
+            "i = %d" format(i) println()
+            un = un - un project(e[i - 1])
+        }
+        u add(un)
+        e add(un normalize())
+    }
+    
+    "===== u ======" println()
+    for(column in u) {
+        column print()
+    }
+    "==============\n" println()
+    
+    "===== e ======" println()
+    for(column in e) {
+        column print()
+    }
+    "==============\n" println()
+
+    q = Matrix new~fromCols(e)
+    
+    "q = " println()
+    q print()
+    
+    exit(0)
 
 }
