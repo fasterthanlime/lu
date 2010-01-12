@@ -12,6 +12,12 @@ Matrix: class {
         memcpy(this data, src data, Float size * width * height)
     }
     
+    identity: static func (size: Int) -> This {
+        n := new(size, size)
+        for(i in 0..size) n[i, i] = 1
+        n
+    }
+    
     set: func (x, y: Int, val: Float) {
         data[x + y * width] = val
     }
@@ -20,9 +26,15 @@ Matrix: class {
         return data[x + y * width]
     }
     
-    lineAdd: func (srcLine, dstLine: Int, factor: Float) {
+    rowMul: func (row: Int, factor: Float) {
         for(x in 0..width) {
-            set(x, dstLine, get(x, dstLine) + get(x, srcLine) * factor)
+            this[x, row] = factor * this[x, row]
+        }
+    }
+    
+    rowAdd: func (srcRow, dstRow: Int, factor: Float) {
+        for(x in 0..width) {
+            this[x, dstRow] = this[x, dstRow] + this[x, srcRow] * factor
         }
     }
 
@@ -75,10 +87,16 @@ Matrix: class {
         for(x in 0..(width * 7 + 1)) printf("─")
         printf("┘\n")
     }
+    
+    getWidth:  func -> Int { width }
+    getHeight: func -> Int { height }
+    
+    isSquare: func -> Bool { getWidth() == getHeight() }
 
 }
 
-operator * (m1, m2: Matrix) -> Matrix { m1 mul(m2) }
-operator - (m1, m2: Matrix) -> Matrix { m1 sub(m2) }
-
+operator *   (m1, m2: Matrix) -> Matrix { m1 mul(m2) }
+operator -   (m1, m2: Matrix) -> Matrix { m1 sub(m2) }
+operator []  (m: Matrix, x, y: Int) -> Float    { m get(x, y) }
+operator []= (m: Matrix, x, y: Int, val: Float) { m set(x, y, val) }
 

@@ -43,42 +43,43 @@ main: func (args: Array<String>) {
     "m = " println()
     m print()
     
-    l, u : Matrix
-    luDecomposition(m, l&, u&) // out parameters ftw
+    r := gaussReduce(m)
     
-    "l = " println()
-    l print()
-    
-    "u = " println()
-    u print()
-    
-    "l * u = " println()
-    (l * u) print()
-    
-    "difference: " println()
-    (m - (l * u)) print()
+    "r = " println()
+    r print()
     
 }
 
 
-luDecomposition: func (m : Matrix, l, u: Matrix@) {
+gaussReduce: func (m : Matrix) -> Matrix {
     
     width  := m getWidth()
     height := m getHeight()
     
-    l = Matrix new(width, height)
-    for(x in 0..width) l set(x, x, 1)
+    r := Matrix new(m)
     
-    u = Matrix new(m)
-    
-    for(x in 0..(width - 1)) {
-        for(y in (x + 1)..height) {
-            denom := u get(x, x)
-            numer := u get(x, y)
-            fac := numer / denom
-            l set(x, y, fac)
-            u lineAdd(x, y, -fac)
+    for(x in 0..height) {
+        
+        "Mul-ing row %d with %.2f" format(x, 1.0 / r[x, x]) println()
+        r rowMul(x, 1.0 / r[x, x])
+        
+        "r = " println()
+        r print()
+        
+        for(y in 0..height) {
+            if(x == y) {
+                continue
+            } else {
+                fac := r[x, y]
+                "Adding %.2f times row %d to row %d" format(-fac, x, y) println()
+                r rowAdd(x, y, -fac)
+            }
         }
     }
+    
+    "At the end, r = " println()
+    r print()
+    
+    r
 
 }
