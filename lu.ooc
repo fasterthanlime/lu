@@ -77,7 +77,7 @@ luDecomposition: func (m : Matrix, l, u: Matrix@) {
             numer := u get(x, y)
             fac := numer / denom
             l set(x, y, fac)
-            u lineAdd(x, y, -fac)
+            u rowAdd(x, y, -fac)
         }
     }
 

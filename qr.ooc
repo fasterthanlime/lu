@@ -75,42 +75,25 @@ qrDecomposition: func (m : Matrix, q, r: Matrix@) {
         a add(v)
     }
     
-    "===== a ======" println()
-    for(column in a) {
-        column print()
-    }
-    "==============\n" println()
-    
     u := ArrayList<Vector> new()
     e := ArrayList<Vector> new()
 
     for(y in 0..width) {
         un := Vector new(a[y])
         for(i in 1..(y+1)) {
-            "i = %d" format(i) println()
             un = un - un project(e[i - 1])
         }
         u add(un)
         e add(un normalize())
     }
     
-    "===== u ======" println()
-    for(column in u) {
-        column print()
-    }
-    "==============\n" println()
-    
-    "===== e ======" println()
-    for(column in e) {
-        column print()
-    }
-    "==============\n" println()
-
     q = Matrix new~fromCols(e)
-    
-    "q = " println()
-    q print()
-    
-    exit(0)
+
+    r = Matrix new(width, width)
+    for(y in 0..width) {
+        for(x in y..width) {
+            r[x, y] = e[y] * a[x]
+        }
+    }
 
 }
