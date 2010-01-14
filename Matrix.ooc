@@ -6,13 +6,18 @@ Matrix: class {
     width, height: Int
     data: Float*
     
-    init: func (=width, =height) {
+    init: func ~fromSize (=width, =height) {
         data = gc_malloc(Float size * width * height)
     }
     
     init: func ~copy (src: This) {
         this(src width, src height)
         memcpy(this data, src data, Float size * width * height)
+    }
+    
+    init: func ~from2DArray (=width, =height, data: Float*) {
+        init~fromSize(width, height)
+        memcpy(this data, data, Float size * width * height)
     }
     
     init: func ~fromCols (l: List<Vector>) {
@@ -120,4 +125,3 @@ operator *   (m1, m2: Matrix) -> Matrix { m1 mul(m2) }
 operator -   (m1, m2: Matrix) -> Matrix { m1 sub(m2) }
 operator []  (m: Matrix, x, y: Int) -> Float    { m get(x, y) }
 operator []= (m: Matrix, x, y: Int, val: Float) { m set(x, y, val) }
-
