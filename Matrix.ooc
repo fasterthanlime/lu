@@ -50,6 +50,14 @@ Matrix: class {
             this[x, dstRow] = this[x, dstRow] + this[x, srcRow] * factor
         }
     }
+    
+    rowSwap: func (row1, row2: Int) {
+        for(x in 0..width) {
+            tmp := this[x, row1]
+            this[x, row1] = this[x, row2]
+            this[x, row2] = tmp
+        }
+    }
 
     sub: func (m2: This) -> This {
         m1 := this

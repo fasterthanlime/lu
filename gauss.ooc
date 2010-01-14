@@ -40,12 +40,12 @@ main: func (args: Array<String>) {
         }
     }
     
-    "m = " println()
+    "initial matrix = " println()
     m print()
     
     r := gaussReduce(m)
     
-    "r = " println()
+    "final matrix = " println()
     r print()
     
 }
@@ -60,10 +60,49 @@ gaussReduce: func (m : Matrix) -> Matrix {
     
     for(x in 0..height) {
         
+        // if the xth element of the row is null, we should swap
+        if(r[x, x] == 0) {
+            okay := false
+            for(x2 in (x+1)..height) {
+                if(r[x, x2] != 0) {
+                    printf("Recovered from null-beginning row %d! We're gonna use %d instead\n", x, x2)
+                    r rowSwap(x, x2)
+                    r print()
+                    printf("Resuming normal Gaussian process\n")
+                    okay = true
+                    break
+                }
+            }
+            if(!okay) {
+                singular := false
+                for(y2 in (x+1)..height) {
+                    for(x2 in 0..width) {
+                        if(r[x2, y2] != 0) {
+                            singular = true
+                            break
+                        }
+                    }
+                }
+                
+                if(singular) {
+                    printf("\nSingular matrix! no solutions.\n")
+                } else {
+                    printf("\nFinished resolving! The solution space is %s\n", 
+                        match (height - x) {
+                            case 0 => "a point"
+                            case 1 => "a line"
+                            case 2 => "a plane"
+                            case 3 => "three-dimensional!"
+                        }
+                    )
+                }
+                return r
+            }
+        }
+        
         "Mul-ing row %d with %.2f" format(x, 1.0 / r[x, x]) println()
         r rowMul(x, 1.0 / r[x, x])
         
-        "r = " println()
         r print()
         
         for(y in 0..height) {
@@ -76,9 +115,6 @@ gaussReduce: func (m : Matrix) -> Matrix {
             }
         }
     }
-    
-    "At the end, r = " println()
-    r print()
     
     r
 
