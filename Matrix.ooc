@@ -1,8 +1,28 @@
 import structs/List
 import Vector
 
-Matrix: class {
+version(unix || apple) {
+    Matrix lowerLeft  = "└"
+    Matrix lowerRight = "┘"
+    Matrix upperLeft  = "┌"
+    Matrix upperRight = "┐"
+    Matrix horiz      = "─"
+    Matrix vert       = "│"
+}
 
+version (!(unix || apple)) {
+    Matrix lowerLeft  = "\\"
+    Matrix lowerRight = "/"
+    Matrix upperLeft  = "/"
+    Matrix upperRight = "\\"
+    Matrix horiz      = "-"
+    Matrix vert       = "|"
+}
+
+Matrix: class {
+    
+    lowerLeft, upperLeft, lowerRight, upperRight, horiz, vert : static String
+    
     width, height: Int
     data: Float*
     
@@ -91,27 +111,27 @@ Matrix: class {
     }
     
     print: func {
-        printf("┌")
-        for(x in 0..(width * 7 + 1)) printf("─")
-        printf("┐\n")
+        printf("%s", upperLeft)
+        for(x in 0..(width * 7 + 1)) printf("%s", horiz)
+        printf("%s\n", upperRight)
         
         for(y in 0..height) {
-            printf("│")
+            printf("%s", vert)
             for(x in 0..width) {
                 printf(" %6.2f", get(x, y))
             }
-            printf(" │\n")
+            printf(" %s\n", vert)
             
             if(y != (height - 1)) {
-                printf("│")
+                printf("%s", vert)
                 for(x in 0..(width * 7 + 1)) printf(" ")
-                printf("│\n")
+                printf("%s\n", vert)
             }
         }
         
-        printf("└")
-        for(x in 0..(width * 7 + 1)) printf("─")
-        printf("┘\n")
+        printf("%s", lowerLeft)
+        for(x in 0..(width * 7 + 1)) printf("%s", horiz)
+        printf("%s\n", lowerRight)
     }
     
     getWidth:  func -> Int { width }
